@@ -84,6 +84,7 @@ class ExternalHeader extends React.Component<ExternalHeaderProps, ExternalHeader
               <div className="navbar-nav ms-auto">
                 <a style={linkStyle} className="nav-item nav-link font-weight-bold" href="/dashboard">Login</a>
                 <a style={linkStyle} className="nav-item nav-link font-weight-bold" href="/register">Register</a>
+                <a style={linkStyle} className="nav-item nav-link font-weight-bold" href="/terms_of_service">Terms of Service</a>
               </div>
             </div>
           </div>

@@ -6,6 +6,7 @@ import { AuthenticatedComponentRenderer } from '@innexgo/auth-react-components';
 
 // public pages
 import Home from './pages/Home';
+import TermsOfService from './pages/TermsOfService';
 import Error404 from './pages/Error404';
 
 // register and auth pages
@@ -77,6 +78,9 @@ function App() {
     <Routes>
       {/* Our home page */}
       <Route path="/" element={<Home branding={branding} />} />
+
+      {/* Terms of service */}
+      <Route path="/terms_of_service" element={<TermsOfService branding={branding} />} />
 
       {/* Necessary for the backend auth service */}
       <Route path="/forgot_password" element={<DefaultForgotPasswordPage branding={branding} />} />
