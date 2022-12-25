@@ -892,9 +892,7 @@ pub async fn submission_view(
 }
 
 pub async fn tournament_data_view(
-    AppData {
-        db, auth_service, ..
-    }: AppData,
+    AppData { db, .. }: AppData,
     props: request::TournamentDataViewProps,
 ) -> Result<Vec<response::TournamentData>, response::AppError> {
     let con: &mut tokio_postgres::Client = &mut *db.get().await.map_err(report_pool_err)?;
@@ -913,9 +911,7 @@ pub async fn tournament_data_view(
 }
 
 pub async fn tournament_submission_view(
-    AppData {
-        db, auth_service, ..
-    }: AppData,
+    AppData { db, .. }: AppData,
     props: request::TournamentSubmissionViewProps,
 ) -> Result<Vec<response::TournamentSubmission>, response::AppError> {
     let con: &mut tokio_postgres::Client = &mut *db.get().await.map_err(report_pool_err)?;
@@ -934,9 +930,7 @@ pub async fn tournament_submission_view(
 }
 
 pub async fn match_resolution_view(
-    AppData {
-        db, auth_service, ..
-    }: AppData,
+    AppData { db, .. }: AppData,
     props: request::MatchResolutionViewProps,
 ) -> Result<Vec<response::MatchResolution>, response::AppError> {
     let con: &mut tokio_postgres::Client = &mut *db.get().await.map_err(report_pool_err)?;
@@ -957,7 +951,6 @@ pub async fn match_resolution_view(
 pub async fn tournament_submission_stream(
     AppData {
         db,
-        auth_service,
         tournament_submission_insert_tx,
         ..
     }: AppData,
@@ -1086,12 +1079,15 @@ pub async fn tournament_submission_stream(
         // if so then close
         return ();
     };
+
+    if let Err(e) = result {
+        eprintln!("tournament_submission_stream error: {}", e);
+    }
 }
 
 pub async fn match_resolution_lite_stream(
     AppData {
         db,
-        auth_service,
         match_resolution_insert_tx,
         ..
     }: AppData,
@@ -1218,4 +1214,8 @@ pub async fn match_resolution_lite_stream(
         // if so then close
         return ();
     };
+
+    if let Err(e) = result {
+        eprintln!("match_resolution_lite_stream error: {}", e);
+    }
 }

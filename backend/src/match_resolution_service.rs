@@ -94,58 +94,6 @@ pub async fn get_recent_by_submission(
     Ok(results)
 }
 
-// returns the last valid submission with the given submission ids and round
-pub async fn get_recent_valid_by_submission_round(
-    con: &mut impl GenericClient,
-    submission_id: i64,
-    opponent_submission_id: i64,
-    round: i64,
-) -> Result<Option<MatchResolution>, tokio_postgres::Error> {
-    let sql = [
-        "SELECT mr.* FROM recent_match_resolution mr",
-        "WHERE 1 = 1",
-        "AND mr.submission_id = $1",
-        "AND mr.opponent_submission_id = $2",
-        "AND mr.round = $3",
-        "AND mr.defected IS NOT NULL",
-    ]
-    .join("\n");
-
-    let stmnt = con.prepare(&sql).await?;
-
-    let results = con
-        .query_opt(&stmnt, &[&submission_id, &opponent_submission_id, &round])
-        .await?
-        .map(|row| row.into());
-
-    Ok(results)
-}
-
-pub async fn get_last_successful_match_round(
-    con: &mut impl GenericClient,
-    submission_id: i64,
-    opponent_submission_id: i64,
-) -> Result<Option<i64>, tokio_postgres::Error> {
-    let sql = [
-        "SELECT MAX(mr.round)",
-        "FROM recent_match_resolution mr",
-        "WHERE 1 = 1",
-        "AND mr.submission_id = $1",
-        "AND mr.opponent_submission_id = $2",
-        "AND mr.defected IS NOT NULL",
-    ]
-    .join("\n");
-
-    let stmnt = con.prepare(&sql).await?;
-
-    let results = con
-        .query_opt(&stmnt, &[&submission_id, &opponent_submission_id])
-        .await?
-        .map(|row| row.get(0));
-
-    Ok(results)
-}
-
 pub async fn get_defection_history(
     con: &mut impl GenericClient,
     submission_id: i64,
