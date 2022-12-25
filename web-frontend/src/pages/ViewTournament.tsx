@@ -105,6 +105,14 @@ function ManageTournamentPageInner(props: {
         />
       </div>
     </Section>
+    <div className="mb-3">
+      <a className="btn btn-primary me-3" href={`/compete?tournamentId=${props.tournamentData.tournament.tournamentId}&kind=VALIDATE`}>
+        Compete!
+      </a>
+      <a className="btn btn-primary" href={`/compete?tournamentId=${props.tournamentData.tournament.tournamentId}&kind=TESTCASE`} hidden={props.apiKey.creatorUserId !== props.tournamentData.tournament.creatorUserId}>
+        Write a Testcase!
+      </a>
+    </div>
     <Section name="Table" id="table">
       <b>Note:</b> submissions are on the rows, opponents are on the columns.
       <div className="text-center p-3" style={{ overflow: "scroll" }}>
@@ -126,14 +134,6 @@ function ManageTournamentPageInner(props: {
         mutable={true}
       />
     </Section>
-    <div className="text-center">
-      <a className="btn btn-primary mx-3" href={`/compete?tournamentId=${props.tournamentData.tournament.tournamentId}&kind=VALIDATE`}>
-        Compete!
-      </a>
-      <a className="btn btn-primary mx-3" href={`/compete?tournamentId=${props.tournamentData.tournament.tournamentId}&kind=TESTCASE`} hidden={props.apiKey.creatorUserId !== props.tournamentData.tournament.creatorUserId}>
-        Write a Testcase!
-      </a>
-    </div>
   </>
 }
 
