@@ -16,8 +16,8 @@ const Help = (props: AuthenticatedComponentProps) =>
 
 		<h4>Writing your bot</h4>
 		<p>To submit a bot to the tournament, open the tournament from the dashboard, then click the <b>Compete!</b> button. You will then be taken to a code editor.</p>
-		<p>Bots are written in Python. Your bot will need to define the function <code>should_defect</code>. Its first argument is your opponent's <code>should_defect</code> function, and its second argument is a list of booleans representing whether your opponent defected in each previous round (earlier rounds are first). <code>should_defect</code> will be run each round; if the function returns <code>True</code>, your bot will defect, and if it returns <code>False</code> it will cooperate.</p>
-		<p><code>should_defect</code> must return within one second. Your bot has filesystem access, but files don't persist across rounds. Packages can't be installed in advance.</p>
+		<p>Bots are written in Python. Your bot will need to define the function <code>should_defect</code>. Its first argument is your opponent's <code>should_defect</code> function—the function itself, not a string containing its source code—and its second argument is a list of booleans representing whether your opponent defected in each previous round, with the earliest round first. <code>should_defect</code> will be run each round; if the function returns <code>True</code>, your bot will defect, and if it returns <code>False</code> it will cooperate.</p>
+		<p><code>should_defect</code> must return within one second. Your bot has filesystem access, but files don't persist across rounds. Your bot will be rerun in a new process rach round; this means, for instance, that global variables don't persist across rounds. Packages can't be installed in advance.</p>
 
 		<h4>Validation</h4>
 		<p>Once you submit your bot, it will be listed on the leaderboard, and its status will be <b>VALIDATE</b>. This means that your bot is being matched with testcases; during matches with testcases, if your bot errors out or otherwise fails to respond, you won't be able to submit it to the tournament.</p>
@@ -47,7 +47,7 @@ const Help = (props: AuthenticatedComponentProps) =>
 		</table>
 
 		<h4>Matchups and scoring</h4>
-		<p>Each bot will, upon submission, be assigned <code>m</code> matchups with every bot that has previously been submitted. Each matchup will consist of <code>r</code> rounds. <code>m</code> and <code>r</code> are variables that can be customized per tournament.</p>
+		<p>Each bot will, upon submission, be assigned <code>m</code> matchups with every bot that has previously been submitted and with itself. Each matchup will consist of <code>r</code> rounds. <code>m</code> and <code>r</code> are variables that can be customized per tournament.</p>
 		<p>Each bot's total score is the average of its payoffs across all matches.</p>
 	    </Section>
 	</Container>
