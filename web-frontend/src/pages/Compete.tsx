@@ -6,9 +6,9 @@ import { Section, AddButton, DisplayModal, } from '@innexgo/common-react-compone
 import ErrorMessage from '../components/ErrorMessage';
 import ExternalLayout from '../components/ExternalLayout';
 import { getFirstOr, unwrap } from '@innexgo/frontend-common';
-import AuthenticatedComponentProps from '@innexgo/auth-react-components/lib/components/AuthenticatedComponentProps';
+import AuthenticatedComponentProps from '@cosmicoptima/auth-react-components/lib/components/AuthenticatedComponentProps';
 import CreateTournamentSubmission from '../components/CreateTournamentSubmission';
-import { DefaultSidebarLayout } from '@innexgo/auth-react-components';
+import { DefaultSidebarLayout } from '@cosmicoptima/auth-react-components';
 import DashboardLayout from '../components/DashboardLayout';
 import PythonEditor from '../components/PythonEditor';
 import { ApiKey } from '@innexgo/frontend-auth-api';

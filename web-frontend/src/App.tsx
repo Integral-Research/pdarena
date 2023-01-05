@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { ApiKey } from '@innexgo/frontend-auth-api';
-import { AuthenticatedComponentRenderer } from '@innexgo/auth-react-components';
+import { AuthenticatedComponentRenderer } from '@cosmicoptima/auth-react-components';
 
 // public pages
 import Home from './pages/Home';
@@ -10,11 +10,11 @@ import TermsOfService from './pages/TermsOfService';
 import Error404 from './pages/Error404';
 
 // register and auth pages
-import { DefaultRegisterPage } from '@innexgo/auth-react-components';
-import { DefaultEmailConfirmPage } from '@innexgo/auth-react-components';
-import { DefaultParentPermissionConfirmPage } from '@innexgo/auth-react-components';
-import { DefaultForgotPasswordPage } from '@innexgo/auth-react-components';
-import { DefaultResetPasswordPage } from '@innexgo/auth-react-components';
+import { DefaultRegisterPage } from '@cosmicoptima/auth-react-components';
+import { DefaultEmailConfirmPage } from '@cosmicoptima/auth-react-components';
+import { DefaultParentPermissionConfirmPage } from '@cosmicoptima/auth-react-components';
+import { DefaultForgotPasswordPage } from '@cosmicoptima/auth-react-components';
+import { DefaultResetPasswordPage } from '@cosmicoptima/auth-react-components';
 
 // logged in required pages
 import Dashboard from './pages/Dashboard';

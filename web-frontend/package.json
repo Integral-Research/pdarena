@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@innexgo/auth-react-components": "0.1.46",
+    "@cosmicoptima/auth-react-components": "^0.1.49",
     "@innexgo/common-react-components": "^0.1.19",
     "@innexgo/frontend-auth-api": "^0.2.47",
     "@innexgo/frontend-common": "^0.0.16",

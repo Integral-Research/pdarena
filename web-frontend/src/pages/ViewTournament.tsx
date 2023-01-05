@@ -13,7 +13,7 @@ import format from "date-fns/format";
 import { Async, AsyncProps } from 'react-async';
 import { MatchResolution, MatchResolutionLite, matchResolutionLiteStream, matchResolutionView, Submission, submissionView, TournamentData, tournamentDataView, TournamentSubmission, tournamentSubmissionView } from '../utils/api';
 import { ApiKey } from '@innexgo/frontend-auth-api';
-import { AuthenticatedComponentProps } from '@innexgo/auth-react-components';
+import { AuthenticatedComponentProps } from '@cosmicoptima/auth-react-components';
 import ManageTournamentSubmissionsTournament from '../components/ManageTournamentSubmissionTournament';
 import CrossTable, { LookupTable, lookupTableWebsocketGenerator } from '../components/CrossTable';
 import React from 'react';

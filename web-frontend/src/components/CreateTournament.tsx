@@ -4,7 +4,7 @@ import { Button, Form } from "react-bootstrap";
 import { TournamentData, tournamentNew } from "../utils/api";
 import { isErr } from '@innexgo/frontend-common';
 import { ApiKey } from '@innexgo/frontend-auth-api';
-import { AuthenticatedComponentProps } from '@innexgo/auth-react-components';
+import { AuthenticatedComponentProps } from '@cosmicoptima/auth-react-components';
 
 
 type CreateTournamentProps = {

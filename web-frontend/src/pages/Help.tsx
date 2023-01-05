@@ -1,7 +1,7 @@
 import { Container } from 'react-bootstrap';
 import { Section } from '@innexgo/common-react-components';
 
-import AuthenticatedComponentProps from '@innexgo/auth-react-components/lib/components/AuthenticatedComponentProps';
+import AuthenticatedComponentProps from '@cosmicoptima/auth-react-components/lib/components/AuthenticatedComponentProps';
 
 import DashboardLayout from '../components/DashboardLayout';
 

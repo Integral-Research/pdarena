@@ -7,7 +7,7 @@ import {
     Person as AccountIcon,
     QuestionCircle as HelpIcon,
 } from 'react-bootstrap-icons';
-import { InnerLayout, AuthenticatedComponentProps } from '@innexgo/auth-react-components';
+import { InnerLayout, AuthenticatedComponentProps } from '@cosmicoptima/auth-react-components';
 
 export default function DashboardLayout(props: React.PropsWithChildren<AuthenticatedComponentProps>) {
   return <InnerLayout apiKey={props.apiKey} logoutCallback={() => props.setApiKey(null)} >

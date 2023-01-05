@@ -8,7 +8,7 @@ import ExternalLayout from '../components/ExternalLayout';
 import { unwrap } from '@innexgo/frontend-common';
 import format from 'date-fns/format';
 import formatDistance from 'date-fns/formatDistance';
-import AuthenticatedComponentProps from '@innexgo/auth-react-components/lib/components/AuthenticatedComponentProps';
+import AuthenticatedComponentProps from '@cosmicoptima/auth-react-components/lib/components/AuthenticatedComponentProps';
 
 import { TournamentData, tournamentDataView } from '../utils/api';
 import DashboardLayout from '../components/DashboardLayout';

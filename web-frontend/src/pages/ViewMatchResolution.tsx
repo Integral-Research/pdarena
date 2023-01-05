@@ -14,7 +14,7 @@ import format from "date-fns/format";
 import { Async, AsyncProps } from 'react-async';
 import { MatchResolution, matchResolutionView, Submission, submissionView, TournamentData, tournamentDataView, TournamentSubmission, TournamentSubmissionKind, tournamentSubmissionView } from '../utils/api';
 import { ApiKey } from '@innexgo/frontend-auth-api';
-import { AuthenticatedComponentProps } from '@innexgo/auth-react-components';
+import { AuthenticatedComponentProps } from '@cosmicoptima/auth-react-components';
 
 import { Prism as SyntaxHighligher } from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/esm/styles/prism';

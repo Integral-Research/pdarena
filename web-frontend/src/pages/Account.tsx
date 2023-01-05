@@ -10,7 +10,7 @@ import { Section, WidgetWrapper } from '@innexgo/common-react-components';
 
 import { ApiKey, UserData, Email, userDataView, emailView } from '@innexgo/frontend-auth-api'
 
-import { AuthenticatedComponentProps, ManageUserData } from '@innexgo/auth-react-components';
+import { AuthenticatedComponentProps, ManageUserData } from '@cosmicoptima/auth-react-components';
 
 import { unwrap, getFirstOr } from '@innexgo/frontend-common';
 
