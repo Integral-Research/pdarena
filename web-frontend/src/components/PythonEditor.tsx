@@ -266,7 +266,7 @@ class PythonEditor extends React.Component<PythonEditorProps, {}> {
       <MonacoEditor
         language="python3"
         theme="vs-dark"
-        defaultValue={this.props.initialCode}
+        value={this.props.initialCode}
         options={options}
         onChange={this.onChange}
         editorDidMount={this.editorDidMount}
