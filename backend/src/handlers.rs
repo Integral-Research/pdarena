@@ -159,6 +159,18 @@ async fn fill_match_resolution(
     _con: &mut tokio_postgres::Client,
     match_resolution: MatchResolution,
 ) -> Result<response::MatchResolution, response::AppError> {
+    // truncate stdout and stderr to avoid streaming too much data
+    let stdout = if match_resolution.stdout.len() > 1000 {
+        match_resolution.stdout[..1000].to_owned()
+    } else {
+        match_resolution.stdout
+    };
+    let stderr = if match_resolution.stderr.len() > 1000 {
+        match_resolution.stderr[..1000].to_owned()
+    } else {
+        match_resolution.stderr
+    };
+
     Ok(response::MatchResolution {
         match_resolution_id: match_resolution.match_resolution_id,
         creation_time: match_resolution.creation_time,
@@ -167,8 +179,8 @@ async fn fill_match_resolution(
         round: match_resolution.round,
         matchup: match_resolution.matchup,
         defected: match_resolution.defected,
-        stdout: match_resolution.stdout,
-        stderr: match_resolution.stderr,
+        stdout,
+        stderr,
     })
 }
 
