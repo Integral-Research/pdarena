@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, Row, Container, Col, Spinner, } from 'react-bootstrap';
+import { Card, FormControl, Row, Container, Col, Spinner, } from 'react-bootstrap';
 import { Async, AsyncProps } from 'react-async';
 import update from 'immutability-helper';
-import { Section, AddButton, DisplayModal, } from '@innexgo/common-react-components';
+import { Action, Section, AddButton, DisplayModal, } from '@innexgo/common-react-components';
 import ErrorMessage from '../components/ErrorMessage';
 import ExternalLayout from '../components/ExternalLayout';
 import { getFirstOr, unwrap } from '@innexgo/frontend-common';
@@ -14,6 +14,64 @@ import PythonEditor from '../components/PythonEditor';
 import { ApiKey } from '@innexgo/frontend-auth-api';
 import { TournamentData, tournamentDataView } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
+import { Pencil, Plus, Trash } from 'react-bootstrap-icons';
+import { v4 as uuidv4 } from 'uuid';
+import tar from 'tar-stream';
+import concat from 'concat-stream';
+
+type Testcase = {
+  name: string;
+  code: string;
+  id: string;
+}
+
+type TestResults = {
+  status: 'notests' | 'pending' | 'valid' | 'timeout' | 'error';
+  progress?: number;
+  totalProgress?: number;
+  error?: string;
+}
+
+const renderResults = (results: TestResults) => {
+  switch (results.status) {
+    case 'notests':
+      return <em>You have not yet tested your bot.</em>;
+    case 'pending':
+      return <em>Please wait ({results.progress}/{results.totalProgress})</em>;
+    case 'valid':
+      return <span>Your bot <b className="text-success">passed</b>. It can now be submitted to the tournament.</span>;
+    case 'timeout':
+      return <span>Your bot <b className="text-danger">failed</b> due to taking too long (&gt;1 second) to run.</span>;
+    case 'error':
+      return <>
+        <p>Your bot <b className="text-danger">failed</b> due to throwing an exception:</p>
+	<pre>{results.error}</pre>
+      </>;
+  }
+}
+
+const runMatch = async (submissionCode: string, opponentCode: string, opponentDefectionHistory: boolean[]) => {
+  const wrapperCode = `#!/usr/bin/env python3
+import submission
+import opponent
+from sys import exit
+
+opponent_defection_history = ${JSON.stringify(opponentDefectionHistory).replaceAll('true', 'True').replaceAll('false', 'False')}
+defected = submission.should_defect(opponent.should_defect, opponent_defection_history)
+exit(100 if defected else 101)
+`;
+  const files = {"submission.py": submissionCode, "opponent.py": opponentCode, "run": wrapperCode};
+
+  return await fetch("http://localhost:8099/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(files),
+  }).then(response => response.json()).then(data => {
+    return { stdout: atob(data.stdout), stderr: atob(data.stderr), exitCode: data.exit_code };
+  })
+}
 
 const defaultCode = `# Example of a Tit-For-Tat Bot:
 def should_defect(opp_defection_function, opponent_defection_history):
@@ -23,6 +81,12 @@ def should_defect(opp_defection_function, opponent_defection_history):
         return False
 `
 
+const defaultTestcases: Testcase[] = [
+  { name: "cooperate", code: "def should_defect(opponent, history):\n    return False", id: uuidv4() },
+  { name: "defect", code: "def should_defect(opponent, history):\n    return True", id: uuidv4() },
+  { name: "tit-for-tat", code: defaultCode, id: uuidv4() },
+]
+
 type InnerCompetePageProps = {
   kind: ("VALIDATE" | "TESTCASE")
   apiKey: ApiKey,
@@ -31,42 +95,167 @@ type InnerCompetePageProps = {
 
 function InnerCompetePage(props: InnerCompetePageProps) {
   const [code, setCode] = React.useState("");
+  const [testcases, setTestcases] = React.useState<Testcase[]>(defaultTestcases);
+
+  const [showEditTestcaseModal, setShowEditTestcaseModal] = React.useState(false);
+  const [editTestcaseIndex, setEditTestcaseIndex] = React.useState(-1);
+
+  const [showAddTestcaseModal, setShowAddTestcaseModal] = React.useState(false);
+  const [pendingTestcaseCode, setPendingTestcaseCode] = React.useState("");
+
+  const [results, setResults] = React.useState<TestResults>({ status: "notests" });
+
   const [showSubmitModal, setShowSubmitModal] = React.useState(false);
+
   const navigate = useNavigate();
 
   const title = props.kind === "VALIDATE"
     ? "Submit Competing Entry"
     : "Submit Testcase";
 
-  return <div style={{ position: 'relative', height: "100vh" }}>
-    <PythonEditor
-      initialCode={defaultCode}
-      onChange={setCode}
-    />
-    <button
-      style={{
-        position: "absolute",
-        bottom: "2rem",
-        left: "2rem"
-      }}
-      className='btn btn-primary'
-      onClick={() => setShowSubmitModal(true)}
-    >
-      Submit
-    </button>
-    <DisplayModal
-      title={title}
-      show={showSubmitModal}
-      onClose={() => setShowSubmitModal(false)}
-    >
-      <CreateTournamentSubmission
-        code={code}
-        kind={props.kind}
-        apiKey={props.apiKey}
-        tournamentData={props.tournamentData}
-        postSubmit={ts => navigate(`/tournament_submission?tournamentId=${ts.tournament.tournamentId}&submissionId=${ts.submissionId}`)}
+  function removeTestcase(id: string) {
+    setTestcases(testcases.filter(t => t.id !== id));
+  }
+
+  function editTestcase(id: string) {
+    const testcase = testcases.find(t => t.id === id);
+    if (testcase === undefined) {
+      return;
+    }
+
+    setEditTestcaseIndex(testcases.indexOf(testcase));
+    setShowEditTestcaseModal(true);
+  }
+
+  async function runTests() {
+    setResults({ status: "pending", progress: 0, totalProgress: testcases.length * 10 });
+
+    for (const testcase of testcases) {
+        let history1 = [];
+	let history2 = [];
+        for (let j = 0; j < 10; j++) {
+	  setResults({ status: "pending", progress: testcases.indexOf(testcase) * 10 + j, totalProgress: testcases.length * 10 });
+
+      	  const results1: any = await runMatch(code, testcase.code, history1);
+	  const results2: any = await runMatch(testcase.code, code, history2);
+
+	  const exitCode1 = results1.exitCode;
+	  const exitCode2 = results2.exitCode;
+
+	  if (exitCode1 === 1) {
+	    setResults({ status: "error", error: results1.stderr });
+	    return;
+	  }
+	  if (exitCode1 === 137) {
+	    setResults({ status: "timeout" });
+	    return;
+	  }
+
+	  history1.push(exitCode2 === 100);
+	  history2.push(exitCode1 === 100);
+	}
+    }
+
+    setResults({ status: "valid" });
+  }
+
+  function TestcaseItem(props: { testcase: Testcase }) {
+    let name = props.testcase.name;
+    let id = props.testcase.id;
+    return <>
+      <span className="me-2">{props.testcase.name}</span>
+      <a className="me-1" href="#" onClick={() => editTestcase(id)}><Pencil/></a>
+      {testcases.length > 1 ? <a href="#" onClick={() => removeTestcase(id)}><Trash/></a> : <></>}
+    </>
+  }
+
+  let addTestcaseInputRef = React.createRef<HTMLInputElement>();
+
+  return <div style={{ display: "flex", flexDirection: "row", height: "100vh" }}>
+    <div style={{ flexGrow: 1 }}>
+      <PythonEditor
+        initialCode={defaultCode}
+        onChange={setCode}
       />
-    </DisplayModal>
+      <DisplayModal
+        title={title}
+        show={showSubmitModal}
+        onClose={() => setShowSubmitModal(false)}
+      >
+        <CreateTournamentSubmission
+          code={code}
+          kind={props.kind}
+          apiKey={props.apiKey}
+          tournamentData={props.tournamentData}
+          postSubmit={ts => navigate(`/tournament_submission?tournamentId=${ts.tournament.tournamentId}&submissionId=${ts.submissionId}`)}
+        />
+      </DisplayModal>
+      <DisplayModal
+        title={`Edit Testcase: ${testcases[editTestcaseIndex]?.name ?? ""}`}
+	show={showEditTestcaseModal}
+	onClose={() => setShowEditTestcaseModal(false)}
+      >
+        <div style={{ height: "18em" }}><PythonEditor
+	  initialCode={testcases[editTestcaseIndex]?.code ?? ""}
+	  onChange={newCode => {
+	    setTestcases(update(testcases, {
+	      [editTestcaseIndex]: { code: { $set: newCode } }
+	    }));
+	  }}
+	/></div>
+      </DisplayModal>
+      <DisplayModal
+        title="New Testcase"
+	show={showAddTestcaseModal}
+	onClose={() => setShowAddTestcaseModal(false)}
+      >
+        <FormControl className="mb-3" placeholder="Name" ref={addTestcaseInputRef}/>
+        <div className="mb-3" style={{ height: "18em" }}><PythonEditor
+	  initialCode={defaultCode}
+	  onChange={setPendingTestcaseCode}
+	/></div>
+	<button className="btn btn-primary" onClick={() => {
+	  let name = addTestcaseInputRef.current?.value;
+	  if (name === undefined || name === "") {
+	    addTestcaseInputRef.current?.classList.add("is-invalid");
+	    addTestcaseInputRef.current?.focus();
+	    return;
+	  }
+
+	  setTestcases([...testcases, {
+	    name,
+	    code: pendingTestcaseCode,
+	    id: uuidv4(),
+	  }]);
+	}}>Add</button>
+      </DisplayModal>
+    </div>
+
+    <div style={{ backgroundColor: "#222", color: "#ddd", padding: "1em", width: "15em" }}>
+      <h2>Testcases</h2>
+      <p><em>Your bot will be tested against the following testcases:</em></p>
+
+      <ul>
+        {testcases.map((t, i) => <li><TestcaseItem testcase={t} /></li>)}
+        <li><a href="#" onClick={() => setShowAddTestcaseModal(true)} style={{ textDecoration: "none" }}><Plus/> Add Testcase</a></li>
+      </ul>
+
+      <h2>Results</h2>
+      <p>{renderResults(results)}</p>
+
+      <button
+        className='btn btn-primary mt-2'
+	onClick={runTests}
+      >
+        Test
+      </button>
+      {results.status === "valid" ? <button
+        className='btn btn-primary ms-2 mt-2'
+        onClick={() => setShowSubmitModal(true)}
+      >
+        Submit
+      </button> : <></>}
+    </div>
   </div>
 }
 
