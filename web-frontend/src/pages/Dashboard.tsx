@@ -71,7 +71,7 @@ function Dashboard(props: AuthenticatedComponentProps) {
 
   return <DashboardLayout {...props}>
     <Container fluid className="py-4 px-4">
-      <Section id="tournaments" name="My Tournaments">
+      <Section id="tournaments" name="Tournaments">
         <Async promiseFn={loadData} apiKey={props.apiKey}>
           {({ setData }) => <>
             <Async.Pending>

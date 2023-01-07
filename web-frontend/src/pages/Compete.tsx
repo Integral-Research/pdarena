@@ -270,7 +270,10 @@ function InnerCompetePage(props: InnerCompetePageProps) {
       </DisplayModal>
     </div>
 
-    <div style={{ backgroundColor: "#222", color: "#ddd", padding: "1em", width: "15em" }}>
+    <div style={{ backgroundColor: "#222", color: "#ddd", padding: "1em", width: "20em" }}>
+      <p>You will need to test your bot before submitting it.</p>
+      <p>During testing, your bot will be matched with testcases, which can be customized; it must always return within 1 second and must not throw an uncaught exception.</p>
+
       <h2>Testcases</h2>
       <p><em>Your bot will be tested against the following testcases:</em></p>
 

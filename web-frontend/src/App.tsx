@@ -29,7 +29,7 @@ import ViewMatchResolution from './pages/ViewMatchResolution';
 
 
 import LightAdaptedIcon from "./img/atlas_icon_light.png";
-import DarkAdaptedIcon from "./img/atlas_icon_dark.svg";
+import DarkAdaptedIcon from "./img/atlas_icon_dark.png";
 
 // Bootstrap CSS & JS
 import './style/style.scss';
