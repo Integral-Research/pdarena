@@ -32,15 +32,6 @@ const ManageTournamentSubmission = (props: {
           </td>
         </tr>
         <tr>
-          <th>Status</th>
-          <td>
-            <h5
-              className={tournamentSubmissionColors.get(props.tournamentSubmission.kind)}
-              children={props.tournamentSubmission.kind}
-            />
-          </td>
-        </tr>
-        <tr>
           <th>Creation Time</th>
           <td>{format(props.tournamentData.tournament.creationTime, "MMM do, hh:mm")} </td>
         </tr>

@@ -101,7 +101,7 @@ const defaultTestcases: Testcase[] = [
 ]
 
 type InnerCompetePageProps = {
-  kind: ("VALIDATE" | "TESTCASE")
+  kind: ("COMPETE" | "TESTCASE")
   apiKey: ApiKey,
   tournamentData: TournamentData,
 }
@@ -122,7 +122,7 @@ function InnerCompetePage(props: InnerCompetePageProps) {
 
   const navigate = useNavigate();
 
-  const title = props.kind === "VALIDATE"
+  const title = props.kind === "COMPETE"
     ? "Submit"
     : "Submit Testcase";
 
@@ -322,7 +322,7 @@ function CompetePage(props: AuthenticatedComponentProps) {
   const tournamentId = parseInt(new URLSearchParams(window.location.search).get("tournamentId") ?? "");
   const kind = new URLSearchParams(window.location.search).get("kind");
 
-  if (kind !== "VALIDATE" && kind !== "TESTCASE") {
+  if (kind !== "COMPETE" && kind !== "TESTCASE") {
     return <ErrorMessage error={new Error("Unknown submission type")} />
   }
 

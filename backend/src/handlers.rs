@@ -719,70 +719,6 @@ pub async fn tournament_submission_new(
             }
         }
         request::TournamentSubmissionKind::Compete => {
-            // ensure validation entry exists
-            let prev_submission =
-                tournament_submission_service::get_recent_by_tournament_submission(
-                    &mut sp,
-                    tournament.tournament_id,
-                    submission.submission_id,
-                )
-                .await
-                .map_err(report_postgres_err)?
-                .ok_or(AppError::TournamentSubmissionNotValidated)?;
-
-            if prev_submission.kind == TournamentSubmissionKind::Cancel
-                || prev_submission.kind == TournamentSubmissionKind::Testcase
-            {
-                return Err(AppError::TournamentSubmissionNotValidated);
-            }
-
-            // if changing from validate to compete then do this
-            if prev_submission.kind == TournamentSubmissionKind::Validate {
-                // ensure that testcases have all passed
-                for testcase in tournament_submission_service::get_recent_by_kind(
-                    &mut sp,
-                    props.tournament_id,
-                    &[request::TournamentSubmissionKind::Testcase],
-                )
-                .await
-                .map_err(report_postgres_err)?
-                {
-                    let mut testcase_results = vec![];
-                    // there can't be any errors when the submission was judging the testcase
-                    testcase_results.append(
-                        &mut match_resolution_service::get_recent_by_submission(
-                            &mut sp,
-                            props.submission_id,
-                            testcase.submission_id,
-                        )
-                        .await
-                        .map_err(report_postgres_err)?,
-                    );
-                    // there can't be any errors when the testcase was judging the submission
-                    testcase_results.append(
-                        &mut match_resolution_service::get_recent_by_submission(
-                            &mut sp,
-                            testcase.submission_id,
-                            props.submission_id,
-                        )
-                        .await
-                        .map_err(report_postgres_err)?,
-                    );
-
-                    // ensure that there are at least tournament_data
-                    if testcase_results.len()
-                        < (tournament_data.n_rounds * tournament_data.n_matchups * 2) as usize
-                    {
-                        return Err(AppError::TournamentSubmissionTestcaseIncomplete);
-                    }
-
-                    for result in testcase_results {
-                        if result.defected.is_none() {
-                            return Err(AppError::TournamentSubmissionTestcaseFails);
-                        }
-                    }
-                }
-
                 // then do match for all other submission entries
                 for opponent in tournament_submission_service::get_recent_by_kind(
                     &mut sp,
@@ -815,7 +751,6 @@ pub async fn tournament_submission_new(
                         })
                         .unwrap();
                 }
-            }
         }
         request::TournamentSubmissionKind::Testcase => {
             // if requester isn't creator of the tournament, reject

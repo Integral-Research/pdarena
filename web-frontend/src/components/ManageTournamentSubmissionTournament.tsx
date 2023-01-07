@@ -31,12 +31,6 @@ function ManageTournamentSubmissionRow(props: ManageTournamentSubmissionRowProps
     <td>{props.tournamentSubmission.name}</td>
     <td><ViewUser userId={props.tournamentSubmission.creatorUserId} apiKey={props.apiKey} expanded={false} /></td>
     <td>
-      <h5
-        className={tournamentSubmissionColors.get(props.tournamentSubmission.kind)}
-        children={props.tournamentSubmission.kind}
-      />
-    </td>
-    <td>
       <Link
         title="View"
         icon={ViewIcon}
@@ -125,7 +119,6 @@ function ManageTournamentSubmissionsTournament(props: ManageTournamentSubmission
         <th>Score</th>
         <th>Name</th>
         <th>Creator</th>
-        <th>Status</th>
         <th>Actions</th>
       </tr>
     </thead>

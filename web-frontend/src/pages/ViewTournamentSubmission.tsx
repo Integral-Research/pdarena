@@ -154,7 +154,6 @@ function ShowMatchupTable(props: ShowVerifyProgressProps) {
     <thead>
       <tr>
         <th>Opponent</th>
-        <th>Opponent Status</th>
         <th>Score</th>
         <th>Details</th>
       </tr>
@@ -163,12 +162,6 @@ function ShowMatchupTable(props: ShowVerifyProgressProps) {
       <tr key={entry.ts.tournamentSubmissionId}>
         <td>
           <h5>{entry.ts.name}</h5>
-        </td>
-        <td>
-          <h5
-            className={tournamentSubmissionColors.get(entry.ts.kind)}
-            children={entry.ts.kind}
-          />
         </td>
         <td>
           <p>{isNaN(entry.ms.avgScore)

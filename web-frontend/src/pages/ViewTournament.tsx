@@ -106,7 +106,7 @@ function ManageTournamentPageInner(props: {
       </div>
     </Section>
     <div className="mb-3">
-      <a className="btn btn-primary me-3" href={`/compete?tournamentId=${props.tournamentData.tournament.tournamentId}&kind=VALIDATE`}>
+      <a className="btn btn-primary me-3" href={`/compete?tournamentId=${props.tournamentData.tournament.tournamentId}&kind=COMPETE`}>
         Compete!
       </a>
       <a className="btn btn-primary" href={`/compete?tournamentId=${props.tournamentData.tournament.tournamentId}&kind=TESTCASE`} hidden={props.apiKey.creatorUserId !== props.tournamentData.tournament.creatorUserId}>

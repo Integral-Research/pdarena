@@ -12,7 +12,7 @@ type CreateTournamentSubmissionProps = {
   code: string,
   tournamentData: TournamentData,
   apiKey: ApiKey,
-  kind: ("VALIDATE" | "TESTCASE"),
+  kind: ("COMPETE" | "TESTCASE"),
   postSubmit: (ts: TournamentSubmission) => void
 }
 
