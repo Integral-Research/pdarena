@@ -26,10 +26,11 @@ type Testcase = {
 }
 
 type TestResults = {
-  status: 'notests' | 'pending' | 'valid' | 'timeout' | 'error';
+  status: 'notests' | 'pending' | 'valid' | 'timeout' | 'error' | 'tcerror' | 'tctimeout';
   progress?: number;
   totalProgress?: number;
   error?: string;
+  scores?: [string, number][];
 }
 
 const renderResults = (results: TestResults) => {
@@ -39,7 +40,12 @@ const renderResults = (results: TestResults) => {
     case 'pending':
       return <em>Please wait ({results.progress}/{results.totalProgress})</em>;
     case 'valid':
-      return <span>Your bot <b className="text-success">passed</b>. It can now be submitted to the tournament.</span>;
+      return <>
+        <span>Your bot <b className="text-success">passed</b>. It can now be submitted to the tournament. It scored against each testcase as follows:</span>
+	<ul>
+	  {results.scores?.map(([name, score]) => <li><b>{name}:</b> {score}</li>)}
+	</ul>
+      </>;
     case 'timeout':
       return <span>Your bot <b className="text-danger">failed</b> due to taking too long (&gt;1 second) to run.</span>;
     case 'error':
@@ -47,6 +53,13 @@ const renderResults = (results: TestResults) => {
         <p>Your bot <b className="text-danger">failed</b> due to throwing an exception:</p>
 	<pre>{results.error}</pre>
       </>;
+    case 'tcerror':
+      return <>
+        <p>Your bot <b className="text-danger">failed</b> due to a testcase throwing an exception:</p>
+	<pre>{results.error}</pre>
+      </>;
+    case 'tctimeout':
+      return <span>Your bot <b className="text-danger">failed</b> due to a testcase taking too long (&gt;1 second) to run.</span>;
   }
 }
 
@@ -110,7 +123,7 @@ function InnerCompetePage(props: InnerCompetePageProps) {
   const navigate = useNavigate();
 
   const title = props.kind === "VALIDATE"
-    ? "Submit Competing Entry"
+    ? "Submit"
     : "Submit Testcase";
 
   function removeTestcase(id: string) {
@@ -129,10 +142,13 @@ function InnerCompetePage(props: InnerCompetePageProps) {
 
   async function runTests() {
     setResults({ status: "pending", progress: 0, totalProgress: testcases.length * 10 });
+    let scores: [string, number][] = [];
 
     for (const testcase of testcases) {
         let history1 = [];
 	let history2 = [];
+	let totalScore = 0;
+
         for (let j = 0; j < 10; j++) {
 	  setResults({ status: "pending", progress: testcases.indexOf(testcase) * 10 + j, totalProgress: testcases.length * 10 });
 
@@ -151,12 +167,35 @@ function InnerCompetePage(props: InnerCompetePageProps) {
 	    return;
 	  }
 
+	  if (exitCode2 === 1 ) {
+	    setResults({ status: "tcerror", error: results2.stderr });
+	    return;
+	  }
+	  if (exitCode2 === 137) {
+	    setResults({ status: "tctimeout" });
+	    return;
+	  }
+
+	  // score
+	  if (exitCode1 === 100 && exitCode2 === 100)
+	    totalScore += 5
+	  else if (exitCode1 === 100 && exitCode2 === 101)
+	    totalScore += 10
+	  else if (exitCode1 === 101 && exitCode2 === 100)
+	    totalScore += 0
+	  else if (exitCode1 === 101 && exitCode2 === 101)
+	    totalScore += 8
+
 	  history1.push(exitCode2 === 100);
 	  history2.push(exitCode1 === 100);
 	}
+
+      const tuple: [string, number] = [testcase.name, totalScore / 10];
+      console.log(tuple);
+      scores.push(tuple);
     }
 
-    setResults({ status: "valid" });
+    setResults({ status: "valid", scores });
   }
 
   function TestcaseItem(props: { testcase: Testcase }) {
