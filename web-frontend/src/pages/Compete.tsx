@@ -62,7 +62,7 @@ exit(100 if defected else 101)
 `;
   const files = {"submission.py": submissionCode, "opponent.py": opponentCode, "run": wrapperCode};
 
-  return await fetch("http://localhost:8099/", {
+  return await fetch("/api/router", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

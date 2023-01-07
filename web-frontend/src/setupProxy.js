@@ -13,6 +13,12 @@ module.exports = function(app) {
       target: 'http://127.0.0.1:8080/public/',
     })
   );
+  app.use(
+    '/api/router/',
+    createProxyMiddleware({
+      target: 'http://127.0.0.1:8099/',
+    })
+  );
   // WARNING: extrmely weird and buggy ...
   // breaks a lot
   app.use(
