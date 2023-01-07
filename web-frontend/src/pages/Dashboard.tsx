@@ -89,7 +89,7 @@ function Dashboard(props: AuthenticatedComponentProps) {
                     <ResourceCard
                       key={a.tournamentDataId}
                       className="m-2"
-                      title={a.title}
+                      title={`${a.title}${a.active ? "" : " (INACTIVE)"}`}
                       subtitle={a.description}
                       text={`Created ${format(a.creationTime, "MMM d, Y")}`}
                       href={`/tournament?tournamentId=${a.tournament.tournamentId}`}
