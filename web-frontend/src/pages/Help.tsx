@@ -18,13 +18,9 @@ const Help = (props: AuthenticatedComponentProps) =>
 		<p>To submit a bot to the tournament, open the tournament from the dashboard, then click the <b>Compete!</b> button. You will then be taken to a code editor.</p>
 		<p>Bots are written in Python. Your bot will need to define the function <code>should_defect</code>. Its first argument is your opponent's <code>should_defect</code> function—the function itself, not a string containing its source code—and its second argument is a list of booleans representing whether your opponent defected in each previous round, with the earliest round first. <code>should_defect</code> will be run each round; if the function returns <code>True</code>, your bot will defect, and if it returns <code>False</code> it will cooperate.</p>
 		<p><code>should_defect</code> must return within one second. Your bot has filesystem access, but files don't persist across rounds. Your bot will be rerun in a new process rach round; this means, for instance, that global variables don't persist across rounds. Packages can't be installed in advance.</p>
-		<p>It is recommended to first write your bot locally and test it using <a href="https://github.com/cosmicoptima/pdarena-test-lib">this package</a>. The package's README contains instructions on how to use it.</p>
-
-		<h4>Validation</h4>
-		<p>Once you submit your bot, it will be listed on the leaderboard, and its status will be <b>VALIDATE</b>. This means that your bot is being matched with testcases; during matches with testcases, if your bot errors out or otherwise fails to respond, you won't be able to submit it to the tournament.</p>
-		<p>Once your bot has passed all testcases, you can submit it. Do this by finding your bot on the leaderboard, clicking <b>View</b>, then clicking <b>Submit</b>.</p>
 
 		<h4>Payoffs</h4>
+		<p>The scores in the following table are in the format <code>a / b</code>, where <code>a</code> is your score and <code>b</code> is your opponent's score.</p>
 		<table className="table" style={{whiteSpace: 'nowrap', width: '1%'}}>
 		    <thead>
 		    	<tr>
@@ -36,13 +32,13 @@ const Help = (props: AuthenticatedComponentProps) =>
 		    <tbody>
 		    	<tr>
 			    <th scope="row">They <em>cooperate</em></th>
-			    <td>10</td>
-			    <td>8</td>
+			    <td>8 / 8</td>
+			    <td>10 / 0</td>
 			</tr>
 		    	<tr>
 			    <th scope="row">They <em>defect</em></th>
-			    <td>0</td>
-			    <td>5</td>
+			    <td>0 / 10</td>
+			    <td>5 / 5</td>
 			</tr>
 		    </tbody>
 		</table>
