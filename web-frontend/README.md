@@ -2,24 +2,26 @@
 
 ## Table of Contents
 
-* [Installation Instructions](#installation-instructions)
-* [Run Instructions](#run-instructions)
-* [Architecture](#architecture)
-  * [Overview](#overview)
-  * [Backend](#backend)
-  * [Innexgo Auth Service](#innexgo-auth-service)
-* [Basics](#basics)
-  * [Asynchronous Network Calls](#asynchronous-network-calls)
-  * [Error Handling with Typescript](#error-handling-with-typescript)
-  * [Rendering Asynchronous Data](#rendering-asynchronous-data)
-  * [React forms with Formik and React Bootstrap](#react-forms-with-formik-and-react-bootstrap)
+- [Todo App Frontend](#todo-app-frontend)
+  - [Table of Contents](#table-of-contents)
+  - [Installation Instructions](#installation-instructions)
+  - [Run Instructions](#run-instructions)
+  - [Architecture](#architecture)
+    - [Overview](#overview)
+    - [Backend](#backend)
+    - [Innexgo Auth Service](#innexgo-auth-service)
+  - [Basics](#basics)
+    - [Asynchronous Network Calls](#asynchronous-network-calls)
+    - [Error Handling with Typescript](#error-handling-with-typescript)
+    - [Rendering Asynchronous Data](#rendering-asynchronous-data)
+    - [React forms with Formik and React Bootstrap](#react-forms-with-formik-and-react-bootstrap)
 
 ## Installation Instructions
 
 * Install [yarn] ( https://classic.yarnpkg.com/en/ )
 * Git clone the repository: `git clone https://github.com/pimpale/todo-app`
 * Install dependencies:
-  * `cd todo-app/web-frontend`
+  * `cd pdarena/web-frontend`
   * `yarn install`
 
 ## Run Instructions
