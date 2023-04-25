@@ -287,19 +287,20 @@ If you are a backend developer, or someone who wants to make changes to the back
 -   Install auth-service
 
     -   Run: `git clone https://github.com/innexgo/auth-service`
-    -   Run: `cd auth-service`
+    -   Run: `cd auth-service/backend`
     -   Run: `cargo build`
 
 -   Install Postgres:
     -   https://www.postgresql.org/download/
-
+    -   Run: `sudo service postgresql start` (for WSL users, at least)
+    -   Run: `sudo passwd postgres` and set the password to `toor`
 #### Initialization: Do this the first time, and every time database upgrades
-
+- (you might have to execute the init steps as the `postgres` user)
 -   Initialize Mail
     -   `cd mail-service/sql`
     -   `psql -f 1-mail-schema.sql`
 -   Initialize Auth
-    -   `cd auth-service/sql`
+    -   `cd auth-service/backend/sql`
     -   `psql -f 1-auth-schema.sql`
     -   `psql -f 2-mock-data.sql`
 -   Initialize TodoApp
@@ -312,7 +313,7 @@ If you are a backend developer, or someone who wants to make changes to the back
     -   `cd mail-service`
     -   `./run.sh`
 -   Start Auth
-    -   `cd auth-service`
+    -   `cd auth-service/backend`
     -   `./run.sh`
 -   Start TodoApp
     -   `cd todo-app/backend`

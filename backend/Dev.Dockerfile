@@ -31,5 +31,5 @@ RUN cargo build
 
 FROM rustlang/rust:nightly as runtime
 WORKDIR app
-COPY --from=builder /app/target/debug/todo-app-service /bin/todo-app-service
-CMD ["/bin/todo-app-service"]
+COPY --from=builder /app/target/debug/pdarena-service /bin/pdarena-service
+CMD ["/bin/pdarena-service"]

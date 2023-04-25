@@ -42,7 +42,7 @@ services:
       ]
     ports:
       - "8079:8079"
-  todo-app-service:
+  pdarena-service:
     build:
       context: .
       dockerfile: Dev.Dockerfile
@@ -50,7 +50,7 @@ services:
       - RUST_BACKTRACE=1
     command:
       [
-        "/bin/todo-app-service",
+        "/bin/pdarena-service",
         "--port=8080",
         "--database-url=postgres://postgres:toor@db/todo_app",
         "--site-external-url=http://localhost:3000",
